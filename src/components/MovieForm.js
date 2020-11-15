@@ -1,76 +1,70 @@
 import React from 'react';
+import { useState } from "react";
 import './MovieForm.css'
 
-const config = {
-  method: "POST",
-  headers: {
-    "Content-Type": "application/json",
-  },
-  body: JSON.stringify(this.state),
-};
+const MovieForm = () => {
+  const [movie, setMovie] = useState({
+    title:"",
+    poster:"",
+    comment:""
+  })
 
-const url = "https://post-a-form.herokuapp.com/api/movies/";
-
-fetch(url, config)
-.then(res => res.json())
-  .then(res => {
-    if (res.error) {
-      alert(res.error);
-    } else {
-      alert(`Movie #${res} has been successfully added!`);
-    }
-  }).catch(e => {
-    console.error(e);
-    alert('There was an error when adding the movie.');
-  });
-
-class MovieForm extends React.Component {
-  constructor() {
-    super()
-    this.state= {
-      movieName: '',
-      urlMoviePoster: '',
-      comment: ''
-    }
-  }
-
-  submitForm = (e) => {
+  const submitForm = (e) => {
     e.preventDefault();
+    const config = {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(movie),
+    };
+    const url = "https://post-a-form.herokuapp.com/api/movies/"
+    fetch(url, config)
+      .then(res => res.json())
+      .then(res => {
+        if (res.error) {
+          alert(res.error);
+        } else {
+          alert(`Movie ${movie.title} has been successfully added!`);
+        }
+      }).catch(e => {
+        console.error(e);
+        alert('There was an error when adding the movie.');
+      });
   };
 
-  onChange = (e) => {
-    this.setState({
-      [e.target.movieName]: e.target.value
+  const onChange = (e) => {
+    setMovie({
+      ...movie, [e.target.name]: e.target.value
     })
   }
 
-  render() {
-    return(
-      <div className="MovieForm">
-        <h1>New Employee</h1>
+  return(
+    <div className="MovieForm">
+        <h1>New Movie</h1>
 
-        <form onSubmit={this.submitForm}>
+        <form onSubmit={submitForm}>
           <fieldset>
             <legend>Information</legend>
             <div className="form-data">
-              <label htmlFor="movieName">Movie's Name</label>
+              <label htmlFor="title">Movie's Title</label>
               <input
                 type="text"
-                id="movieName"
-                name="movieName"
-                onChange={this.onChange}
-                value={this.state.movieName}
+                id="title"
+                name="title"
+                onChange={onChange}
+                value={movie.title}
               />
             </div>
 
             <div className="form-data">
-              <label htmlFor="urlMoviePoster">Movie's Poster</label>
+              <label htmlFor="poster">Movie's Poster</label>
               <input
                 type="text"
-                id="urlMoviePoster"
-                name="urlMoviePoster"
-                onChange={this.onChange}
-                value={this.state.urlMoviePoster}
+                id="poster"
+                name="poster"
+                onChange={onChange}
+                value={movie.poster}
               />
             </div>
 
@@ -80,8 +74,8 @@ class MovieForm extends React.Component {
                 type="textarea"
                 id="comment"
                 name="comment"
-                onChange={this.onChange}
-                value={this.state.comment}
+                onChange={onChange}
+                value={movie.comment}
               />
             </div>
             <hr />
@@ -91,8 +85,7 @@ class MovieForm extends React.Component {
           </fieldset>
         </form>
       </div>
-    )
-  }
+  )
 }
 
-export default MovieForm;
+export default MovieForm
